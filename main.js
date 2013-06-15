@@ -1,3 +1,18 @@
+/**
+ * gadgets.rpc
+ *
+ * This module implements the gadgets.rpc API defined by OpenSocial.
+ *
+ * References:
+ *  - [OpenSocial](http://opensocial.org/)
+ *  - [OpenSocial](http://en.wikipedia.org/wiki/OpenSocial)
+ *  - [rpc.js](https://svn.apache.org/repos/asf/shindig/tags/shindig-project-2.0.0/features/src/main/javascript/features/rpc/rpc.js)
+ *
+ *  - [Gadgets API](https://developers.google.com/gadgets/)
+ *  - [Gadgets Specification](https://developers.google.com/gadgets/docs/spec)
+ *  - [Static Class gadgets.rpc](https://developers.google.com/gadgets/docs/reference/#gadgets.rpc)
+ *  - [rpc.js](http://opensocial-resources.googlecode.com/svn/spec/0.8/gadgets/rpc.js)
+ */
 define(['exports',
         './lib/transports'],
 function(exports, transports) {
