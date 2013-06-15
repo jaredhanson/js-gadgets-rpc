@@ -22,7 +22,8 @@
     }
   ],
   "dependencies": {
-    "postmessage": "git://github.com/anchorjs/postmessage.git"
+    "gadgets-util": "git://github.com/jaredhanson/js-gadgets-util.git",
+    "postmessage": "git://github.com/anchorjs/postmessage.git",
   },
   "devDependencies": {
     "express": "3.x.x",
@@ -37,6 +38,7 @@
   },
   "volo": {
     "dependencies": {
+      "gadgets-util": "github:jaredhanson/js-gadgets-util/master",
       "postmessage": "github:anchorjs/postmessage/master"
     }
   }
