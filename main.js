@@ -22,12 +22,12 @@ function(exports, util, transports) {
     , useLegacyProtocol = {}
     , authToken = {};
 
-  exports.register = function(serviceName, handler) {
+  function register(serviceName, handler) {
     console.log('gadgets.rpc.register');
     console.log('  serviceName: ' + serviceName);
   }
   
-  exports.setRelayUrl = function(targetId, url, useLegacy) {
+  function setRelayUrl(targetId, url, useLegacy) {
     console.log('gadgets.rpc.setRelayUrl');
     console.log('  targetId: ' + targetId);
     
@@ -45,7 +45,7 @@ function(exports, util, transports) {
     useLegacyProtocol[targetId] = !!useLegacy;
   }
   
-  exports.setAuthToken = function(targetId, token, forceSecure) {
+  function setAuthToken(targetId, token, forceSecure) {
     console.log('gadgets.rpc.setAuthToken');
     console.log('  targetId: ' + targetId);
     console.log('  token: ' + token);
@@ -57,11 +57,11 @@ function(exports, util, transports) {
     //setupFrame(targetId, token, forcesecure);
   }
   
-  exports.setupReceiver = function(targetId, url, authToken, forceSecure) {
+  function setupReceiver(targetId, url, authToken, forceSecure) {
     setupChildIframe(targetId, url, authToken, forceSecure)
   }
   
-  exports.getAuthToken = function(targetId) {
+  function getAuthToken(targetId) {
     console.log('gadgets.rpc.getAuthToken');
     console.log('  targetId: ' + targetId);
     
@@ -77,17 +77,17 @@ function(exports, util, transports) {
     // The "relay URL" can be explicitly specified, defaulting to the IFRAME
     // source.
     var relayUrl = url || iframe.src;
-    exports.setRelayUrl(targetId, relayUrl);
+    setRelayUrl(targetId, relayUrl);
 
     // The auth token is parsed from URL params (rpctoken) or overridden.
     var params = util.getUrlParameters(iframe.src);
     var rpctoken = authToken || params.rpctoken;
     var forcesecure = forceSecure || params.forcesecure;
-    exports.setAuthToken(targetId, rpctoken, forcesecure);
+    setAuthToken(targetId, rpctoken, forcesecure);
   }
   
   
-  exports.getOrigin = function(url) {
+  function getOrigin(url) {
     if (!url) {
       return "";
     }
@@ -143,4 +143,13 @@ function(exports, util, transports) {
     transport.init(process, transportReady);
   }
   init();
+  
+  
+  exports.register = register;
+  exports.setRelayUrl = setRelayUrl;
+  exports.setAuthToken = setAuthToken;
+  exports.setupReceiver = setupReceiver;
+  exports.getAuthToken = getAuthToken;
+  exports.getOrigin = getOrigin;
+  
 });
