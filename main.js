@@ -18,9 +18,13 @@ define(['exports',
         './lib/transports'],
 function(exports, util, transports) {
 
+  var SETUP_FRAME_TIMEOUT = 500;
+  var SETUP_FRAME_MAX_TRIES = 10;
+
   var relayUrl = {}
     , useLegacyProtocol = {}
-    , authToken = {};
+    , authToken = {}
+    , setup = {};
 
   function register(serviceName, handler) {
     console.log('gadgets.rpc.register');
@@ -53,8 +57,8 @@ function(exports, util, transports) {
     
     token = token || '';
     authToken[targetId] = String(token);
-    // TODO:
-    //setupFrame(targetId, token, forcesecure);
+    
+    setupFrame(targetId, token, forceSecure);
   }
   
   function setupReceiver(targetId, url, authToken, forceSecure) {
@@ -130,6 +134,35 @@ function(exports, util, transports) {
   
   
   var transport = transports.get();
+  
+  function setupFrame(frameId, token, forcesecure) {
+    if (setup[frameId] === true) {
+      return;
+    }
+
+    if (typeof setup[frameId] === 'undefined') {
+      setup[frameId] = 0;
+    }
+
+    var tgtFrame = document.getElementById(frameId);
+    if (frameId === '..' || tgtFrame != null) {
+      if (transport.setup(frameId, token, forcesecure) === true) {
+        setup[frameId] = true;
+        return;
+      }
+    }
+
+    if (setup[frameId] !== true && setup[frameId]++ < SETUP_FRAME_MAX_TRIES) {
+      // Try again in a bit, assuming that frame will soon exist.
+      window.setTimeout(function() { setupFrame(frameId, token, forcesecure) },
+                        SETUP_FRAME_TIMEOUT);
+    } else {
+      // TODO: Implement this.
+      // Fail: fall back for this gadget.
+      //receiverTx[frameId] = fallbackTransport;
+      //setup[frameId] = true;
+    }
+  }
   
   function transportReady(receiverId, readySuccess) {
     console.log('transportReady');
