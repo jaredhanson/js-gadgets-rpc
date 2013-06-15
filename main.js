@@ -31,6 +31,46 @@ function(exports, transports) {
     return authToken[targetId];
   }
   
+  exports.getOrigin = function(url) {
+    if (!url) {
+      return "";
+    }
+    url = url.toLowerCase();
+    if (url.indexOf("//") == 0) {
+      url = window.location.protocol + url;
+    }
+    if (url.indexOf("://") == -1) {
+      // Assumed to be schemaless. Default to current protocol.
+      url = window.location.protocol + "//" + url;
+    }
+    // At this point we guarantee that "://" is in the URL and defines
+    // current protocol. Skip past this to search for host:port.
+    var host = url.substring(url.indexOf("://") + 3);
+
+    // Find the first slash char, delimiting the host:port.
+    var slashPos = host.indexOf("/");
+    if (slashPos != -1) {
+      host = host.substring(0, slashPos);
+    }
+
+    var protocol = url.substring(0, url.indexOf("://"));
+
+    // Use port only if it's not default for the protocol.
+    var portStr = "";
+    var portPos = host.indexOf(":");
+    if (portPos != -1) {
+      var port = host.substring(portPos + 1);
+      host = host.substring(0, portPos);
+      if ((protocol === "http" && port !== "80") ||
+          (protocol === "https" && port !== "443")) {
+        portStr = ":" + port;
+      }
+    }
+
+    // Return <protocol>://<host>[<port>]
+    return protocol + "://" + host + portStr;
+  }
+  
   
   
   var transport = transports.get();
