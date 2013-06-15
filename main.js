@@ -47,6 +47,22 @@ function(exports, util, transports) {
     services[serviceName] = handler;
   }
   
+  function unregister(serviceName) {
+    console.log('gadgets.rpc.unregister');
+    console.log('  serviceName: ' + serviceName);
+    
+    if (serviceName === CALLBACK_NAME || serviceName === ACK) {
+      throw new Error("Cannot delete callback/ack service");
+    }
+
+    if (serviceName === DEFAULT_NAME) {
+      throw new Error("Cannot delete default service:"
+                      + " use unregisterDefault");
+    }
+
+    delete services[serviceName];
+  }
+  
   function setRelayUrl(targetId, url, useLegacy) {
     console.log('gadgets.rpc.setRelayUrl');
     console.log('  targetId: ' + targetId);
@@ -264,6 +280,7 @@ function(exports, util, transports) {
   
   
   exports.register = register;
+  exports.unregister = unregister;
   exports.setRelayUrl = setRelayUrl;
   exports.setAuthToken = setAuthToken;
   exports.setupReceiver = setupReceiver;
