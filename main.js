@@ -14,7 +14,7 @@
  *  - [rpc.js](http://opensocial-resources.googlecode.com/svn/spec/0.8/gadgets/rpc.js)
  */
 define(['exports',
-        'gadgets-util',
+        'gadgets.util',
         './lib/transports'],
 function(exports, util, transports) {
 

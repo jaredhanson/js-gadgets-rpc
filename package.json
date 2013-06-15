@@ -1,14 +1,14 @@
 {
-  "name": "gadgets-rpc",
+  "name": "gadgets.rpc",
   "version": "0.0.0",
   "description": "gadgets.rpc module for Anchor.js.",
   "keywords": ["opensocial", "gadgets", "rpc"],
   "repository": {
     "type": "git",
-    "url": "git://github.com/jaredhanson/js-gadgets-rpc.git"
+    "url": "git://github.com/jaredhanson/js-gadgets.rpc.git"
   },
   "bugs": {
-    "url": "http://github.com/jaredhanson/js-gadgets-rpc/issues"
+    "url": "http://github.com/jaredhanson/js-gadgets.rpc/issues"
   },
   "author": {
     "name": "Jared Hanson",
@@ -22,7 +22,7 @@
     }
   ],
   "dependencies": {
-    "gadgets-util": "git://github.com/jaredhanson/js-gadgets-util.git",
+    "gadgets.util": "git://github.com/jaredhanson/js-gadgets.util.git",
     "postmessage": "git://github.com/anchorjs/postmessage.git",
   },
   "devDependencies": {
@@ -38,7 +38,7 @@
   },
   "volo": {
     "dependencies": {
-      "gadgets-util": "github:jaredhanson/js-gadgets-util/master",
+      "gadgets.util": "github:jaredhanson/js-gadgets.util/master",
       "postmessage": "github:anchorjs/postmessage/master"
     }
   }
