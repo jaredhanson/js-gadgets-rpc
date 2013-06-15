@@ -18,10 +18,15 @@ define(['exports',
         './lib/transports'],
 function(exports, util, transports) {
 
+  var CALLBACK_NAME = '__cb';
+  var DEFAULT_NAME = '';
+  var ACK = '__ack';
+
   var SETUP_FRAME_TIMEOUT = 500;
   var SETUP_FRAME_MAX_TRIES = 10;
 
-  var relayUrl = {}
+  var services = {}
+    , relayUrl = {}
     , useLegacyProtocol = {}
     , authToken = {}
     , setup = {};
@@ -29,6 +34,17 @@ function(exports, util, transports) {
   function register(serviceName, handler) {
     console.log('gadgets.rpc.register');
     console.log('  serviceName: ' + serviceName);
+    
+    if (serviceName === CALLBACK_NAME || serviceName === ACK) {
+      throw new Error("Cannot overwrite callback/ack service");
+    }
+
+    if (serviceName === DEFAULT_NAME) {
+      throw new Error("Cannot overwrite default service:"
+                      + " use registerDefault");
+    }
+
+    services[serviceName] = handler;
   }
   
   function setRelayUrl(targetId, url, useLegacy) {
@@ -135,6 +151,11 @@ function(exports, util, transports) {
   
   var transport = transports.get();
   
+  services[DEFAULT_NAME] = function() {
+    console.log('WARNING: Unknown RPC service: ' + this.s);
+    //gadgets.warn('Unknown RPC service: ' + this.s);
+  };
+  
   function setupFrame(frameId, token, forcesecure) {
     if (setup[frameId] === true) {
       return;
@@ -169,7 +190,71 @@ function(exports, util, transports) {
   }
   
   function process(rpc) {
-    console.log('process');
+    //
+    // RPC object contents:
+    //   s: Service Name
+    //   f: From
+    //   c: The callback ID or 0 if none.
+    //   a: The arguments for this RPC call.
+    //   t: The authentication token.
+    //
+    if (rpc && typeof rpc.s === 'string' && typeof rpc.f === 'string' &&
+        rpc.a instanceof Array) {
+
+      // Validate auth token.
+      if (authToken[rpc.f]) {
+        // We don't do type coercion here because all entries in the authToken
+        // object are strings, as are all url params. See setupReceiver(...).
+        if (authToken[rpc.f] !== rpc.t) {
+          console.log('ERROR: Invalid auth token.');
+          // TODO:
+          //gadgets.error("Invalid auth token. " + authToken[rpc.f] + " vs " + rpc.t);
+          //securityCallback(rpc.f, FORGED_MSG);
+        }
+      }
+
+      if (rpc.s === ACK) {
+        // Acknowledgement API, used to indicate a receiver is ready.
+        window.setTimeout(function() { transportReady(rpc.f, true); }, 0);
+        return;
+      }
+
+      // If there is a callback for this service, attach a callback function
+      // to the rpc context object for asynchronous rpc services.
+      //
+      // Synchronous rpc request handlers should simply ignore it and return a
+      // value as usual.
+      // Asynchronous rpc request handlers, on the other hand, should pass its
+      // result to this callback function and not return a value on exit.
+      //
+      // For example, the following rpc handler passes the first parameter back
+      // to its rpc client with a one-second delay.
+      //
+      // function asyncRpcHandler(param) {
+      //   var me = this;
+      //   setTimeout(function() {
+      //     me.callback(param);
+      //   }, 1000);
+      // }
+      if (rpc.c) {
+        console.log('TODO: Implement RPC callback.');
+        //rpc.callback = function(result) {
+        //  gadgets.rpc.call(rpc.f, CALLBACK_NAME, null, rpc.c, result);
+        //};
+      }
+
+      // Call the requested RPC service.
+      var result = (services[rpc.s] ||
+                    services[DEFAULT_NAME]).apply(rpc, rpc.a);
+
+      // If the rpc request handler returns a value, immediately pass it back
+      // to the callback. Otherwise, do nothing, assuming that the rpc handler
+      // will make an asynchronous call later.
+      if (rpc.c && typeof result !== 'undefined') {
+        console.log('TODO: Send result to RPC call.');
+        //gadgets.rpc.call(rpc.f, CALLBACK_NAME, null, rpc.c, result);
+      }
+    }
   }
   
   function init() {
