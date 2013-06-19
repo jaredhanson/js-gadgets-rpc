@@ -9,8 +9,11 @@ build-browserify:
 	mkdir -p build
 	browserify -t deamdify main.js -o build/bundle.js
 
-build-component:
+build-component: components
 	component build -u component-amd
+
+components:
+	component install
 
 
 # ==============================================================================
