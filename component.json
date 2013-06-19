@@ -1,0 +1,17 @@
+{
+  "name": "gadgets.rpc",
+  "version": "0.0.0",
+  "description": "gadgets.rpc module for Anchor.js.",
+  "keywords": ["opensocial", "gadgets", "rpc"],
+  "repo": "jaredhanson/js-gadgets.rpc",
+  "main": "main.js",
+  "scripts": [
+    "main.js",
+    "lib/transports/wpm.js",
+    "lib/transports.js"
+  ],
+  "dependencies": {
+    "jaredhanson/js-gadgets.util": "*"
+  },
+  "license": "MIT"
+}
