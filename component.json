@@ -1,7 +1,7 @@
 {
   "name": "gadgets.rpc",
   "version": "0.0.0",
-  "description": "gadgets.rpc module for Anchor.js.",
+  "description": "Implementation of the OpenSocial gadgets.rpc API.",
   "keywords": ["opensocial", "gadgets", "rpc"],
   "repo": "jaredhanson/js-gadgets.rpc",
   "main": "main.js",
